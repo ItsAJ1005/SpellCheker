@@ -4,11 +4,15 @@ A simple spell checker implemented in JavaScript that uses an iterative approach
 
 ## Features ✨
 
-- **Word Counting**: Counts the occurrences of each unique word in the corpus.
+- **Word Counting**: Counts the occurrences of each unique word in the corpus to identify commonly used words.
 - **Edit Distance Calculation**: Generates suggestions for misspelled words based on edit distance algorithms.
-- **Dynamic Suggestions**: Provides suggestions for corrections based on user input and the frequency of words in the corpus.
-- **Dictionary Management**: Add, remove, or edit words in the dictionary dynamically.
-- **User-Friendly Interface**: Allows users to check the spelling of sentences directly.
+- **Dynamic Suggestions**: Provides frequency-based suggestions for corrections.
+- **Dictionary Management**: Allows users to add, remove, or edit words in the dictionary dynamically during runtime.
+- **Interactive Word-by-Word Correction**: Users can interactively correct multiple misspelled words in a sentence, with options to:
+  - **Choose a suggested correction**
+  - **Enter a custom replacement**
+  - **Skip correction entirely**
+- **User-Friendly Command-Line Interface**: Enables users to interactively check the spelling of sentences and manage the dictionary through an easy-to-use CLI.
 
 ## Installation 📲
 
@@ -34,6 +38,18 @@ removeWord("wrongword");
 ```
 editWord("oldword", "newword");
 ```
+
+## Usage Example 📜
+
+When you run the spell checker, it will check the spelling of a sentence and interactively ask you if you'd like to correct any misspelled words. You can choose to replace each misspelled word or skip the correction process.
+
+For example:
+
+```
+Enter a sentence: hell wrld iss a mann
+```
+The program will identify misspelled words like "wrld" and give you options to either choose a suggestion or enter a custom replacement.
+
 
 ### Reference: 📄
 This project is inspired by the research paper:
