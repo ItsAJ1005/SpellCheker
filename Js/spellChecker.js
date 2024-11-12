@@ -197,15 +197,90 @@ function handleInput(option) {
 
 function processSentence(sentence) {
   const words = sentence.split(/\s+/);
-  words.forEach((word) => {
+  misspelledWords = [];
+
+  correctedSentence = [...words];
+
+  words.forEach((word, index) => {
     const result = correct(word);
     if (result.suggestions.length > 0) {
-      console.log(` - "${word}" is misspelled. Suggestions: ${result.suggestions.join(', ')}.`);
+      misspelledWords.push({ word, index, suggestions: result.suggestions });
+    }
+  });
+
+  if (misspelledWords.length === 0) {
+    console.log("\nAll words are spelled correctly.");
+    showMenu();
+    return;
+  }
+
+  console.log(`\nFound ${misspelledWords.length} misspelled word(s).`);
+  rl.question("\nDo you want to correct them? (yes/no): ", (answer) => {
+    if (answer.trim().toLowerCase() === "yes") {
+      console.log("\nStarting correction process...");
+      handleCorrections(0); // Start correcting from the first misspelled word
     } else {
-      console.log(` - "${word}" is spelled correctly.`);
+      console.log("\nCorrection skipped.");
+      showMenu();
     }
   });
 }
+
+function handleCorrections(i) {
+  if (i >= misspelledWords.length) {
+    console.log("\nCorrected Sentence:\n" + correctedSentence.join(" "));
+    showMenu();
+    return;
+  }
+
+  const { word, index, suggestions } = misspelledWords[i];
+  console.log(`\n"${word}" is misspelled. Suggestions: ${suggestions.join(", ")}`);
+  console.log("Options:");
+  console.log("1. Choose a suggestion");
+  console.log("2. Enter a custom replacement");
+  console.log("3. Skip correction");
+
+  rl.question("Select an option (1/2/3): ", (option) => {
+    switch (option.trim()) {
+      case "1":
+        if (suggestions.length > 0) {
+          console.log("\nSuggestions:");
+          suggestions.forEach((s, idx) => {
+            console.log(`${idx + 1}. ${s}`);
+          });
+          rl.question("Select a suggestion: ", (choice) => {
+            const suggestionIndex = parseInt(choice) - 1;
+            if (suggestionIndex >= 0 && suggestionIndex < suggestions.length) {
+              correctedSentence[index] = suggestions[suggestionIndex];
+            } else {
+              console.log("Invalid choice. Skipping correction.");
+            }
+            handleCorrections(i + 1);
+          });
+        } else {
+          handleCorrections(i + 1);
+        }
+        break;
+
+      case "2":
+        rl.question("Enter your replacement word: ", (replacement) => {
+          correctedSentence[index] = replacement.trim();
+          handleCorrections(i + 1);
+        });
+        break;
+
+      case "3":
+        handleCorrections(i + 1);
+        break;
+
+      default:
+        console.log("Invalid option. Skipping correction.");
+        handleCorrections(i + 1);
+        break;
+    }
+  });
+}
+
 
 // Start the interactive session
 showMenu();
